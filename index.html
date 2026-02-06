@@ -18,7 +18,17 @@
 
   <main class="max-w-3xl mx-auto px-4 py-8">
     <section aria-label="Glossary entries">
-      <dl id="glossary-list" class="space-y-4">
+      <label for="search" class="sr-only">Search glossary</label>
+      <input
+        id="search"
+        type="search"
+        placeholder="Search by term, description, or tag..."
+        autocomplete="off"
+        class="w-full mb-4 px-4 py-2 border border-gray-300 rounded-lg
+               text-sm text-gray-800 placeholder-gray-400
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      >
+      <dl id="glossary-list" class="space-y-3">
         <!-- Entries rendered by glossary.js -->
       </dl>
     </section>

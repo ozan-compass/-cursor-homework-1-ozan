@@ -56,20 +56,40 @@ const TAG_COLORS = {
   database: "bg-amber-100 text-amber-700",
 };
 
-function renderGlossary() {
+/**
+ * Filter entries whose term, description, or any tag
+ * contains the query (case-insensitive).
+ * Returns all entries when query is empty/blank.
+ */
+function filterEntries(entries, query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return entries;
+  return entries.filter(({ term, description, tags }) =>
+    term.toLowerCase().includes(q) ||
+    description.toLowerCase().includes(q) ||
+    tags.some((tag) => tag.toLowerCase().includes(q))
+  );
+}
+
+function renderGlossary(entries) {
   const list = document.getElementById("glossary-list");
 
-  const html = glossaryEntries
+  if (entries.length === 0) {
+    list.innerHTML = `<p class="text-sm text-gray-500 text-center py-4">No matching entries found.</p>`;
+    return;
+  }
+
+  const html = entries
     .map(
       ({ term, description, tags }) => `
-    <div class="glossary-entry bg-white rounded-lg border border-gray-200 p-5">
-      <dt class="text-lg font-semibold text-gray-900">${term}</dt>
-      <dd class="mt-1 text-gray-600">${description}</dd>
-      <dd class="mt-3 flex flex-wrap gap-2" aria-label="Tags">
+    <div class="glossary-entry bg-white rounded-lg border border-gray-200 p-4" tabindex="0">
+      <dt role="heading" aria-level="3" class="text-base font-semibold text-gray-900">${term}</dt>
+      <dd class="mt-1 text-sm leading-relaxed text-gray-700">${description}</dd>
+      <dd class="mt-2 flex flex-wrap gap-1.5" aria-label="Tags">
         ${tags
           .map(
             (tag) =>
-              `<span class="tag inline-block text-xs font-medium px-2.5 py-0.5 rounded-full ${TAG_COLORS[tag] || "bg-gray-100 text-gray-600"}">${tag}</span>`
+              `<span class="tag inline-block text-[0.7rem] font-medium leading-snug px-2 py-px rounded-full ${TAG_COLORS[tag] || "bg-gray-100 text-gray-700"}">${tag}</span>`
           )
           .join("")}
       </dd>
@@ -80,4 +100,12 @@ function renderGlossary() {
   list.innerHTML = html;
 }
 
-document.addEventListener("DOMContentLoaded", renderGlossary);
+document.addEventListener("DOMContentLoaded", () => {
+  renderGlossary(glossaryEntries);
+
+  const searchInput = document.getElementById("search");
+  searchInput.addEventListener("input", () => {
+    const filtered = filterEntries(glossaryEntries, searchInput.value);
+    renderGlossary(filtered);
+  });
+});
