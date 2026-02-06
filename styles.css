@@ -1,0 +1,13 @@
+/* Custom tweaks beyond Tailwind */
+
+.tag {
+  transition: opacity 0.15s ease;
+}
+
+.tag:hover {
+  opacity: 0.8;
+}
+
+.glossary-entry:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
